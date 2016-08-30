@@ -14,7 +14,7 @@ class colors:
    blue = "\033[1;34m"
    green = "\033[1;32m"
 
-banner = '\n ' + "-" * 85 + colors.green + '\n  usefulShodan.py v1.0 - Shodan Parser, Nick Sanzotta (Nick_Sanzotta@Rapid7.com)\n ' + colors.normal + "-" * 85 + "\n"
+banner = '\n ' + "-" * 85 + colors.green + '\n  usefulShodan.py v1.0 - Shodan Parser, Nick Sanzotta (@Beamr)\n ' + colors.normal + "-" * 85 + "\n"
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -58,7 +58,7 @@ def usefulShodan(inputfile):
 def help():
     print banner
     print " Usage: ./usefulShodan.py <OPTIONS> \n"
-    print " Example: ./usefulShodan.py -i /opt/clients/Rapid7/scope.txt\n"
+    print " Example: ./usefulShodan.py -i /opt/clients/scope.txt\n"
     print " Parsed data is saved in an XLSX format. (Filter and sort data for desired results.)"
     print " Output path: shodan/shodan-data/shodan_timestamp.xlsx \n"
     print "\t -i <input>\t\tInputs file containing a list of IP addresses."
