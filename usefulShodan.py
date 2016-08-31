@@ -1,6 +1,7 @@
 #!/usr/bin/python
-# Nick Sanzotta (@Beamr)
 # Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file.
+# Created by: Nick Sanzotta/@beamer
+# Script Version: usefulShodan.py v1.0
 import os, sys, getopt,xlsxwriter, time
 from sys import argv 
 
@@ -14,7 +15,7 @@ class colors:
    blue = "\033[1;34m"
    green = "\033[1;32m"
 
-banner = '\n ' + "-" * 85 + colors.green + '\n  usefulShodan.py v1.0 - Shodan Parser, Nick Sanzotta (@Beamr)\n ' + colors.normal + "-" * 85 + "\n"
+banner = '\n ' + "-" * 85 + colors.green + '\n  usefulShodan.py v1.0 - Shodan Parser, Nick Sanzotta\@beamr\n ' + colors.normal + "-" * 85 + "\n"
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
