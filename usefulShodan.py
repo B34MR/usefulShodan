@@ -15,7 +15,10 @@ class colors:
    blue = "\033[1;34m"
    green = "\033[1;32m"
 
-banner = '\n ' + "-" * 85 + colors.green + '\n  usefulShodan.py v1.0 - Shodan Parser, Nick Sanzotta\@beamr\n ' + colors.normal + "-" * 85 + "\n"
+banner = '\n '  + colors.normal + '\n# Created by: Nick Sanzotta/@beamr' \
++ colors.normal + '\n# Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file. ' + '\n' \
++ colors.green + '\n usefulShodan.py v1.0' + '\n' + colors.normal
+
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -57,14 +60,15 @@ def usefulShodan(inputfile):
 
 
 def help():
-    print banner
-    print " Usage: ./usefulShodan.py <OPTIONS> \n"
-    print " Example: ./usefulShodan.py -i /opt/clients/scope.txt\n"
-    print " Parsed data is saved in an XLSX format. (Filter and sort data for desired results.)"
-    print " Output path: shodan/shodan-data/shodan_timestamp.xlsx \n"
-    print "\t -i <input>\t\tInputs file containing a list of IP addresses."
-    print "\t -h <help>\t\tPrints this help menu."
-    print """
+	cls()
+	print banner
+	print " Usage: ./usefulShodan.py <OPTIONS> \n"
+	print " Example: ./usefulShodan.py -i /client/scope.txt\n"
+	print " Parsed data is saved in an XLSX format. (Filter and sort data for desired results.)"
+	print " Output path: shodan/shodan-data/shodan_timestamp.xlsx \n"
+	print "\t -i <input>\t\tInputs file containing a list of IP addresses."
+	print "\t -h <help>\t\tPrints this help menu."
+	print """
     \nInstallation:
 		usefulShodan.py requires the Shodan Command-Line Interface (CLI). 
 		To install Shodan CLI execute: easy_install shodan
@@ -74,8 +78,7 @@ def help():
 		Shodan CLI supports both free and paid API Keys.
 		Initialize the environment with your API key using shodan init: shodan init YOUR_API_KEY
 	"""
-		
-    sys.exit(2)
+	sys.exit(2)
     
 def main(argv):
     if len(argv) < 1:
