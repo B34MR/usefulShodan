@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file.
-# Created by: Nick Sanzotta/@beamer
-# Script Version: usefulShodan.py v1.0
-import os, sys, getopt,xlsxwriter, time
-from sys import argv 
-
+# Created by: Nick Sanzotta / @beamr
+# Version: usefulShodan.py v 1.10072016
+import os, sys, getopt, xlsxwriter, time
+from sys import argv
+from netaddr import IPNetwork
 timestr = time.strftime("%Y%m%d-%H%M")
 curr_time = time.time()
 
@@ -15,16 +15,35 @@ class colors:
    blue = "\033[1;34m"
    green = "\033[1;32m"
 
-banner = '\n '  + colors.normal + '\n# Created by: Nick Sanzotta/@beamr' \
-+ colors.normal + '\n# Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file. ' + '\n' \
-+ colors.green + '\n usefulShodan.py v1.0' + '\n' + colors.normal
+banner = colors.green + r"""
+                          ___          ___      
+                        /'___\        /\_ \     
+ __  __    ____     __ /\ \__/  __  __\//\ \    
+/\ \/\ \  /',__\  /'__`\ \ ,__\/\ \/\ \ \ \ \   
+\ \ \_\ \/\__, `\/\  __/\ \ \_/\ \ \_\ \ \_\ \_ 
+ \ \____/\/\____/\ \____\\ \_\  \ \____/ /\____\
+  \/___/  \/___/  \/____/ \/_/   \/___/  \/____/
+ ____    __                  __                      
+/\  _`\ /\ \                /\ \                     
+\ \,\L\_\ \ \___     ___    \_\ \     __      ___    
+ \/_\__ \\ \  _ `\  / __`\  /'_` \  /'__`\  /' _ `\  
+   /\ \L\ \ \ \ \ \/\ \L\ \/\ \L\ \/\ \L\.\_/\ \/\ \ 
+   \ `\____\ \_\ \_\ \____/\ \___,_\ \__/.\_\ \_\ \_\
+    \/_____/\/_/\/_/\/___/  \/__,_ /\/__/\/_/\/_/\/_/
+
+"""+'\n' \
++ colors.green + '\n usefulShodan.py v1.10072016' \
++ colors.normal + '\n Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file..'\
++ colors.normal + '\n Created by: Nick Sanzotta/@beamr' + '\n'\
++ colors.normal + ' ' + '*' * 95 +'\n' + colors.normal
 
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def usefulShodan(inputfile):
+	savedTo = 'usefulShodan-data/shodan'+'_'+timestr+'.xlsx'
 	# Create a workbook and add a worksheet.
-	workbook = xlsxwriter.Workbook('usefulShodan-data/shodan'+'_'+timestr+'.xlsx')
+	workbook = xlsxwriter.Workbook(savedTo)
 	worksheet = workbook.add_worksheet()
 	# Add a bold format to use to highlight cells.
  	bold = workbook.add_format({'bold': True})
@@ -36,11 +55,19 @@ def usefulShodan(inputfile):
 	col = 0
 	#Import IP Addresses from file
 	with open(inputfile, 'rb') as f1:
-			output1 = f1.read().splitlines()
+		scopeList = f1.read().splitlines()
+		print("\n")
+		for x in scopeList[::]:
+			for ip in IPNetwork(x):
+				# DEBUG print(ip)
+				with open('scope.txt', 'ab+') as f2:
+					f2.write(str(ip)+"\n")
+					output1 = f2.read().splitlines()
+
 	for host in output1:
 		shodan = os.system('shodan host '+host+ '> /tmp/shodan.txt')
-		with open('/tmp/shodan.txt', 'rb') as f2:
-				output2 = f2.read()
+		with open('/tmp/shodan.txt', 'rb') as f3:
+				output2 = f3.read()
 		try:
 			shodanList = output2.splitlines()
 			ipaddress  = shodanList[0]
@@ -57,6 +84,7 @@ def usefulShodan(inputfile):
 		except IndexError:
 			print("\n")
 	workbook.close()
+	print('Excel file saved to: ' + savedTo)
 
 
 def help():
@@ -64,6 +92,13 @@ def help():
 	print banner
 	print " Usage: ./usefulShodan.py <OPTIONS> \n"
 	print " Example: ./usefulShodan.py -i /client/scope.txt\n"
+	print " Supports Single IP Address and CIDR format.\n"
+	print " Input file example:\n"
+	print "\t root@beamr:~# more /scope.txt" 
+	print "\t 210.11.101.0/25"
+	print "\t 216.11.101.0/28"
+	print "\t 10.10.10.10"
+	print "\t 20.20.20.20\n"
 	print " Parsed data is saved in an XLSX format. (Filter and sort data for desired results.)"
 	print " Output path: shodan/shodan-data/shodan_timestamp.xlsx \n"
 	print "\t -i <input>\t\tInputs file containing a list of IP addresses."
