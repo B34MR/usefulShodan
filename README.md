@@ -4,6 +4,7 @@
 	Version: usefulShodan.py v 1.10072016
 ***  
 Installation:
+
 		usefulShodan.py requires the Shodan Command-Line Interface (CLI). 
 		To install Shodan CLI execute: easy_install shodan
 	
@@ -15,6 +16,7 @@ Installation:
 
 ***
 Usage:
+
 	Usage: ./usefulShodan.py <OPTIONS>
  	Example: ./usefulShodan.py -i /client/scope.txt
 
