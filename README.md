@@ -1,6 +1,7 @@
-# usefulShodan
-Parses Shodan data from a list of IP addresses and saves output to an XLSX file.
-
+# usefulShodan.py
+	Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file.
+	Created by: Nick Sanzotta / @beamr
+	Version: usefulShodan.py v 1.10072016
 ***  
 Installation:
 		usefulShodan.py requires the Shodan Command-Line Interface (CLI). 
