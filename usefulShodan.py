@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 # Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file.
 # Created by: Nick Sanzotta / @beamr
-# Version: usefulShodan.py v 1.10072016
+# Version: usefulShodan.py v 1.05162017
 import os, sys, getopt, xlsxwriter, time
 from sys import argv
 from netaddr import IPNetwork
@@ -32,7 +32,7 @@ banner = colors.green + r"""
     \/_____/\/_/\/_/\/___/  \/__,_ /\/__/\/_/\/_/\/_/
 
 """+'\n' \
-+ colors.green + '\n usefulShodan.py v1.10072016' \
++ colors.green + '\n usefulShodan.py v1.05162017' \
 + colors.normal + '\n Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file..'\
 + colors.normal + '\n Created by: Nick Sanzotta/@beamr' + '\n'\
 + colors.normal + ' ' + '*' * 95 +'\n' + colors.normal
@@ -62,7 +62,10 @@ def usefulShodan(inputfile):
 				# DEBUG print(ip)
 				with open('scope.txt', 'ab+') as f2:
 					f2.write(str(ip)+"\n")
-					output1 = f2.read().splitlines()
+
+
+	with open('scope.txt', 'rb') as f2:
+		output1 = f2.read().splitlines()
 
 	for host in output1:
 		shodan = os.system('shodan host '+host+ '> /tmp/shodan.txt')
@@ -85,6 +88,7 @@ def usefulShodan(inputfile):
 			print("\n")
 	workbook.close()
 	print('Excel file saved to: ' + savedTo)
+
 
 
 def help():
