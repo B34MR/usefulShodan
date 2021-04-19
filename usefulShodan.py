@@ -1,8 +1,11 @@
-#!/usr/bin/env python2
-# Description: Parses Shodan data from a list of IP addresses and saves output to an XLSX file.
-# Created by: Nick Sanzotta / @beamr
-# Version: usefulShodan.py v 1.05162017
-import os, sys, getopt, xlsxwriter, time
+#!/usr/bin/env python3
+# Version: usefulShodan.py v 2.04192021
+
+import os
+import sys
+import getopt
+import xlsxwriter
+import time
 from sys import argv
 from netaddr import IPNetwork
 timestr = time.strftime("%Y%m%d-%H%M")
@@ -46,8 +49,8 @@ def usefulShodan(inputfile):
 	workbook = xlsxwriter.Workbook(savedTo)
 	worksheet = workbook.add_worksheet()
 	# Add a bold format to use to highlight cells.
- 	bold = workbook.add_format({'bold': True})
- 	# Write some data headers.
+	bold = workbook.add_format({'bold': True})
+	# Write some data headers.
 	worksheet.write('A1', 'Ports - SSL Versions:', bold)
 	worksheet.write('B1', 'IP Addresses:', bold)
 	# Start from the first cell. Rows and columns are zero indexed.
@@ -68,7 +71,8 @@ def usefulShodan(inputfile):
 		output1 = f2.read().splitlines()
 
 	for host in output1:
-		shodan = os.system('shodan host '+host+ '> /tmp/shodan.txt')
+		shodan = os.system('shodan host ' + host + '> /tmp/shodan.txt')
+		time.sleep(1)
 		with open('/tmp/shodan.txt', 'rb') as f3:
 				output2 = f3.read()
 		try:
@@ -76,10 +80,10 @@ def usefulShodan(inputfile):
 			ipaddress  = shodanList[0]
 			servicesListening = shodanList[7::]
 			servicesListening = [x.strip(' ') for x in servicesListening] #Removes white spaces for each item in list
-			print ipaddress
+			print(ipaddress)
 			for item in servicesListening:
 				item = item.replace('|-- ', '')
-				print item.strip()
+				print(item.strip())
 				worksheet.write(row, col,     item.strip())
 				worksheet.write(row, col + 1, ipaddress)
 				row += 1
@@ -93,30 +97,29 @@ def usefulShodan(inputfile):
 
 def help():
 	cls()
-	print banner
-	print " Usage: ./usefulShodan.py <OPTIONS> \n"
-	print " Example: ./usefulShodan.py -i /client/scope.txt\n"
-	print " Supports Single IP Address and CIDR format.\n"
-	print " Input file example:\n"
-	print "\t root@beamr:~# more /scope.txt" 
-	print "\t 210.11.101.0/25"
-	print "\t 216.11.101.0/28"
-	print "\t 10.10.10.10"
-	print "\t 20.20.20.20\n"
-	print " Parsed data is saved in an XLSX format. (Filter and sort data for desired results.)"
-	print " Output path: shodan/shodan-data/shodan_timestamp.xlsx \n"
-	print "\t -i <input>\t\tInputs file containing a list of IP addresses."
-	print "\t -h <help>\t\tPrints this help menu."
-	print """
-    \nInstallation:
+	print(banner)
+	print(" Usage: ./usefulShodan.py <OPTIONS> \n")
+	print(" Example: ./usefulShodan.py -i /client/scope.txt\n")
+	print(" Supports Single IP Address and CIDR format.\n")
+	print(" Input file example:\n")
+	print("\t root@beamr:~# more /scope.txt") 
+	print("\t 210.11.101.0/25")
+	print("\t 216.11.101.0/28")
+	print("\t 10.10.10.10")
+	print("\t 20.20.20.20\n")
+	print(" Parsed data is saved in an XLSX format. (Filter and sort data for desired results.)")
+	print(" Output path: shodan/shodan-data/shodan_timestamp.xlsx \n")
+	print("\t -i <input>\t\tInputs file containing a list of IP addresses.")
+	print("\t -h <help>\t\tPrints this help menu.")
+	print(
+		"""\nInstallation:
 		usefulShodan.py requires the Shodan Command-Line Interface (CLI). 
 		To install Shodan CLI execute: easy_install shodan
 	
 		To upgrade Shodan CLI: easy_install -U shodan
 	
 		Shodan CLI supports both free and paid API Keys.
-		Initialize the environment with your API key using shodan init: shodan init YOUR_API_KEY
-	"""
+		Initialize the environment with your API key using shodan init: shodan init YOUR_API_KEY""")
 	sys.exit(2)
     
 def main(argv):
@@ -147,4 +150,4 @@ def main(argv):
 
 if __name__ == "__main__":
     main(argv[1:])
-print "\nCompleted in: %.1fs\n" % (time.time() - curr_time)
+print("\nCompleted in: %.1fs\n" % (time.time() - curr_time))
