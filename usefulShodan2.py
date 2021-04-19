@@ -25,20 +25,22 @@ logging = logging.getLogger('rich')
 class UsefulShodan():
 	''' Shodan Cli Wrapper '''
 
-	def __init__(self, cmd):
+	def __init__(self, cmd='shodan host --format tsv'):
 		self.cmd = cmd
-		pass
+		self.filepath = None
+		self.ipaddress = None
+
 
 	def run():
 		''' '''
 		pass
 
 
-	def scan_host(self, target):
+	def scan_host(self, ipadress):
 		''' '''
 
 		cmd = self.cmd.split(' ')
-		cmd.append(target)
+		cmd.append(ipadress)
 
 		try:
 			proc = subprocess.run(cmd,
@@ -63,9 +65,25 @@ class UsefulShodan():
 				return cmd[4], port_protocol
 
 
-	def process_targets(self, filepath):
+
+	def read_ipaddress(self, filepath):
 		''' '''
-		pass
+
+		with open(self.filepath, 'r') as f:
+			lines = f.readlines()
+			# remove \n from lst.
+			self.ipaddress = list(map(lambda s: s.strip(), lines))
+
+
+	def read_file(self, filepath):
+		''' '''
+
+		if os.path.isfile(filepath):
+			self.filepath = filepath
+
+			self.read_ipaddress(self.filepath)
+		else:
+			return False
 
 
 	def save_xlxs(self):
@@ -92,23 +110,23 @@ class UsefulShodan():
 def main():
 	''' Main func '''
 
-	usefulshodan = UsefulShodan('shodan host --format tsv')
+	usefulshodan = UsefulShodan()
 
-	with open('scope2.txt', 'r') as f1:
-		lines = f1.readlines()
-		# print(line)
+	usefulshodan.read_file('scope2.txt')
+	print(usefulshodan.filepath)
+	print(usefulshodan.ipaddress)
 
-		for line in lines:
-			try:
-				ip = line.strip('\n')
-				result = usefulshodan.scan_host(f'{ip}')
-			except Exception as e:
-				print(e)
-				# raise e
-				pass
-			else:
-				if result != None:
-					console.log(f'{result}')
+	# for line in lines:
+	# 	try:
+	# 		ip = line.strip('\n')
+	# 		result = usefulshodan.scan_host(ip)
+	# 	except Exception as e:
+	# 		print(e)
+	# 		# raise e
+	# 		pass
+	# 	else:
+	# 		if result != None:
+	# 			console.log(f'{result}')
 
 
 if __name__ == '__main__':
