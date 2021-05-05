@@ -28,7 +28,7 @@ class UsefulShodan():
 	def __init__(self, cmd='shodan host --format tsv'):
 		self.cmd = cmd
 		self.filepath = None
-		self.ipaddress = None
+		self.ipaddresses = None
 
 
 	def run():
@@ -36,8 +36,8 @@ class UsefulShodan():
 		pass
 
 
-	def scan_host(self, ipadress):
-		''' '''
+	def scan_ip(self, ipadress):
+		''' Process IP address against Shodan's database '''
 
 		cmd = self.cmd.split(' ')
 		cmd.append(ipadress)
@@ -62,8 +62,7 @@ class UsefulShodan():
 				# Convert lst:strs to lst:tuples ie, (port, protocol).
 				port_protocol = [(mylst[i], mylst[i+1]) for i in range(0, len(mylst), 2)]
 
-				return cmd[4], port_protocol
-
+				return port_protocol
 
 
 	def read_ipaddress(self, filepath):
@@ -72,7 +71,7 @@ class UsefulShodan():
 		with open(self.filepath, 'r') as f:
 			lines = f.readlines()
 			# remove \n from lst.
-			self.ipaddress = list(map(lambda s: s.strip(), lines))
+			self.ipaddresses = list(map(lambda s: s.strip(), lines))
 
 
 	def read_file(self, filepath):
@@ -86,16 +85,6 @@ class UsefulShodan():
 			return False
 
 
-	def save_xlxs(self):
-		''' '''
-		pass
-
-
-	def save_txt(self):
-		''' '''
-		pass
-
-
 	def print_table(self):
 		''' '''
 		pass
@@ -106,27 +95,33 @@ class UsefulShodan():
 		pass
 
 
-
 def main():
 	''' Main func '''
 
+	# Const arg value.
+	FILE = sys.argv[1]
+	# Create instance
 	usefulshodan = UsefulShodan()
+	# Read file from argv.
+	usefulshodan.read_file(FILE)
+	# Read IP addressees.
+	ipaddresses = usefulshodan.ipaddresses
 
-	usefulshodan.read_file('scope2.txt')
-	print(usefulshodan.filepath)
-	print(usefulshodan.ipaddress)
+	# DEV: verbose flag
+	verbose = True
 
-	# for line in lines:
-	# 	try:
-	# 		ip = line.strip('\n')
-	# 		result = usefulshodan.scan_host(ip)
-	# 	except Exception as e:
-	# 		print(e)
-	# 		# raise e
-	# 		pass
-	# 	else:
-	# 		if result != None:
-	# 			console.log(f'{result}')
+	try:
+		with console.status(f'[txt.spinner]Checking Shodan...') as status:
+			for ip in ipaddresses:
+				# Process IP address against Shodan's database.
+				result = usefulshodan.scan_ip(ip)
+				# Print result to stdout.
+				console.log(f'{ip}: {result}')
+				# Non-verbose print that discards results of None type.
+				if not verbose and result is not None:
+					console.log(f'{result}')
+	except KeyboardInterrupt:
+		print(f'\nQuit: detected [CTRL-C]')
 
 
 if __name__ == '__main__':

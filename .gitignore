@@ -1,4 +1,6 @@
 scope.txt
+ips.txt
+targets.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
