@@ -25,22 +25,18 @@ logging = logging.getLogger('rich')
 class UsefulShodan():
 	''' Shodan Cli Wrapper '''
 
-	def __init__(self, cmd='shodan host --format tsv'):
-		self.cmd = cmd
+	def __init__(self):
 		self.filepath = None
 		self.ipaddresses = None
 
 
-	def run():
-		''' '''
-		pass
-
-
-	def scan_ip(self, ipadress):
+	def scan_ip(self, ipaddress, cmd='shodan host --format tsv'):
 		''' Process IP address against Shodan's database '''
 
-		cmd = self.cmd.split(' ')
-		cmd.append(ipadress)
+		result = []
+		# Shodan scan command.
+		cmd = cmd.split(' ')
+		cmd.append(ipaddress)
 
 		try:
 			proc = subprocess.run(cmd,
@@ -54,16 +50,20 @@ class UsefulShodan():
 			pass # raise e
 		else:
 			if 'Error: No information available for that IP.' in proc.stderr:
-				return None
+				# Append ip and None values to result:lst.
+				result.append((ipaddress, None, None))
 			else:
-				# DEV
-				# Define stdout as lst
-				mylst = proc.stdout.split()
-				# Convert lst:strs to lst:tuples ie, (port, protocol).
-				# port_protocol = [(mylst[i], mylst[i+1]) for i in range(0, len(mylst), 2)]
-				# DEV
-				# return port_protocol
-				return mylst[0], mylst[1]
+				stdoutlst = proc.stdout.split()
+				# Process scan results with multiple ports per ip. 
+				# Dev-note used a lst-comprehension nested within a dict to simplify.
+				resultdict = {ipaddress: [(stdoutlst[i], stdoutlst[i+1]) for i in range(0, len(stdoutlst), 2)]}
+				# Apppend resultdic to result:lst.
+				for k, v in resultdict.items():
+					for i in v:
+						# print(f'DEBUG: {k}, {i[0]}, {i[1]}')
+						i = (k, i[0], i[1].upper())
+						result.append(i)
+			return result
 
 
 	def read_ipaddress(self, filepath):
@@ -86,34 +86,19 @@ class UsefulShodan():
 			return False
 
 
-	def print_table(self):
-		''' '''
-		pass
-
-	
-	def print_version(self):
-		''' '''
-		pass
-
-
 def main():
 	''' Main func '''
 
 	# DEV: Table
-	from rich.console import Console
 	from rich.table import Table
 	# Table title.
 	table = Table(title="Shodan.io")
 	# Columns defined.
-	table.add_column("IP Address", justify="right", style="cyan", no_wrap=True)
-	table.add_column("Port(s)", style="magenta")
-	table.add_column("Protocol", justify="left", style="green")
-	# Sample row added.
-	table.add_row("127.0.0.1", "445", "DEMO")
-	# Demo Table print.
-	# console.print(table)
+	table.add_column("IP Address", justify="left", style="cyan", no_wrap=True)
+	table.add_column("Port(s)", justify="left", style="magenta", no_wrap=True)
+	table.add_column("Protocol", justify="left", style="green", no_wrap=True)
 
-	# Const arg value.
+	# Filepath arg value.
 	FILE = sys.argv[1]
 	# Create instance
 	usefulshodan = UsefulShodan()
@@ -128,33 +113,27 @@ def main():
 	try:
 		with console.status(f'[txt.spinner]Checking Shodan.io...') as status:
 			for ip in ipaddresses:
-				# Process IP address against Shodan's database.
-				result = usefulshodan.scan_ip(ip)
-				
-				# DEV - print 
-				# print(type(result))
-				
-				# Non-verbose print, exclude 'None' type results.
-				if verbose == False:
-					if result is not None:
-						console.log(f'{ip}: {result}')
-						# DEV - table
-						table.add_row(f'{ip}', f'{result[0]}', f'{result[1].upper()}')
-				else:
-					# Verbose print, include 'None' type results.
-					console.log(f'{ip}: {result}')
-					if result is not None:
-						# DEV - table
-						table.add_row(f'{ip}', f'{result[0]}', f'{result[1].upper()}')
+				# Scan IP address against Shodan's database.
+				results = usefulshodan.scan_ip(ip)
+				for result in results:
+					# Non-verbose print, exclude 'None' type results.
+					if verbose == False:
+						if result[1] is None:
+							pass
+						else:
+							console.log(f'{result}')
+							# DEV - table
+							table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
+					# Verbose print. include 'None' type results.
 					else:
+						console.log(f'{result}')
 						# DEV - table
-						table.add_row(f'{ip}', f'{result}', f'{result}')
-
-
+						table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
 	except KeyboardInterrupt:
 		print(f'\nQuit: detected [CTRL-C]')
 	
 	# DEV
+	print('\n')
 	console.print(table)
 
 
