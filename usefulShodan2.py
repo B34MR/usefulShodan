@@ -91,12 +91,22 @@ def main():
 
 	# DEV: Table
 	from rich.table import Table
+	from rich import box
+
+	from rich.theme import Theme
+	custom_theme = Theme({
+		'status.spinner' :'orange1',
+		'txt.spinner' : 'light_sky_blue3'
+		})
+	from rich.console import Console
+	console = Console(theme=custom_theme)
+
 	# Table title.
-	table = Table(title="Shodan.io")
+	table = Table(title="Shodan.io", box=box.DOUBLE_EDGE)
 	# Columns defined.
-	table.add_column("IP Address", justify="left", style="cyan", no_wrap=True)
-	table.add_column("Port(s)", justify="left", style="magenta", no_wrap=True)
-	table.add_column("Protocol", justify="left", style="green", no_wrap=True)
+	table.add_column("IP Address", justify="left", style="light_sky_blue3", no_wrap=True) #khaki3
+	table.add_column("Port", justify="left", style="orange3", no_wrap=True)
+	table.add_column("Protocol", justify="left", style="grey37", no_wrap=True)
 
 	# Filepath arg value.
 	FILE = sys.argv[1]
@@ -111,8 +121,9 @@ def main():
 	verbose = False
 
 	try:
-		with console.status(f'[txt.spinner]Checking Shodan.io...') as status:
-			for ip in ipaddresses:
+		
+		for ip in ipaddresses:
+			with console.status(f'[txt.spinner]Scanning... [orange3]{ip}') as status:
 				# Scan IP address against Shodan's database.
 				results = usefulshodan.scan_ip(ip)
 				for result in results:
@@ -121,12 +132,12 @@ def main():
 						if result[1] is None:
 							pass
 						else:
-							console.log(f'{result}')
+							# console.log(f'[wheat4]{result}')
 							# DEV - table
 							table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
 					# Verbose print. include 'None' type results.
 					else:
-						console.log(f'{result}')
+						# console.log(f'[wheat4]{result}')
 						# DEV - table
 						table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
 	except KeyboardInterrupt:
@@ -135,6 +146,7 @@ def main():
 	# DEV
 	print('\n')
 	console.print(table)
+	console.print('\n[italic][deep_sky_blue4][link=https://www.shodan.io]https://www.shodan.io[/link]\n')
 
 
 if __name__ == '__main__':
