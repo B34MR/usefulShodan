@@ -2,14 +2,20 @@
 
 from rich.console import Console
 from rich.logging import RichHandler
+from rich.table import Table
+from rich import box
+from rich.theme import Theme
 import os
 import sys
 import logging
 import subprocess
 
 
-# Init Rich console.
-console = Console()
+# Rich console and theme init.
+themefile = 'theme.ini'
+mytheme = Theme().read(themefile)
+from rich.console import Console
+console = Console(theme=mytheme)
 
 # logger - Rich
 logging.basicConfig(
@@ -89,24 +95,12 @@ class UsefulShodan():
 def main():
 	''' Main func '''
 
-	# DEV: Table
-	from rich.table import Table
-	from rich import box
-
-	from rich.theme import Theme
-	custom_theme = Theme({
-		'status.spinner' :'red',
-		'txt.spinner' : 'grey37'
-		})
-	from rich.console import Console
-	console = Console(theme=custom_theme)
-
 	# Table title.
-	table = Table(title="[grey37]UsefulShodan2.py", box=box.DOUBLE_EDGE)
-	# Columns defined.
-	table.add_column("IP Address", justify="left", style="grey53", no_wrap=True) #khaki3 #grey37
-	table.add_column("Port", justify="left", style="red", no_wrap=True)
-	table.add_column("Protocol", justify="left", style="grey37", no_wrap=True)
+	table = Table(title="[t.title]UsefulShodan2.py", box=box.DOUBLE_EDGE, style='table')
+	# Table Columns.
+	table.add_column("IP Address", justify="left", no_wrap=True, style='t.col1')
+	table.add_column("Port", justify="left", no_wrap=True,  style='t.col2')
+	table.add_column("Protocol", justify="left", no_wrap=True, style='t.col3')
 
 	# Filepath arg value.
 	FILE = sys.argv[1]
@@ -120,17 +114,14 @@ def main():
 	# DEV: verbose flag
 	verbose = False
 
-	console.print(f'\n[grey27]UsefulShodan2: [italic]An over engineered Shodan-cli wrapper')
-	console.print(f'[grey27]Shodan.io: [italic][deep_sky_blue4][link=https://cli.shodan.io/]https://cli.shodan.io')
-	console.print(f'[grey27]Github.com: [italic][deep_sky_blue4][link=https://github.com/NickSanzotta/usefulShodan/]https://github.com/NickSanzotta\n')
-	# console.print('\n')
+	# Header
+	console.print(f'\nUsefulShodan2: [i]An over engineered Shodan-cli wrapper', style='header')
+	console.print(f'Shodan.io: [url][link=https://cli.shodan.io/]https://cli.shodan.io', style='header')
+	console.print(f'Github.com: [url][link=https://github.com/NickSanzotta/usefulShodan/]https://github.com/NickSanzotta\n', style='header')
 
 	try:
-		# print(f'Checking Shodan.io ...')
 		for ip in ipaddresses:
-			# print(f'Checking {ip}')
-			with console.status(spinner='bouncingBar', status=f'[txt.spinner]Shodan.io[white]: {ip}') as status:
-				# console.log(f'{ip}')
+			with console.status(spinner='bouncingBar', status=f'[status.text]Shodan.io: [white]{ip}') as status:
 				# Scan IP address against Shodan's database.
 				results = usefulshodan.scan_ip(ip)
 				for result in results:
@@ -140,25 +131,18 @@ def main():
 							pass
 						else:
 							# console.log(f'[wheat4]{result}')
-							# DEV - table
 							table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
 					# Verbose print. include 'None' type results.
 					else:
 						# console.log(f'[wheat4]{result}')
-						# DEV - table
 						table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
 	except KeyboardInterrupt:
 		print(f'\nQuit: detected [CTRL-C]')
 	
-	# DEV
+	# Render Table.
 	print('\n')
 	console.print(table)
 	console.print('\n')
-	# console.print(f'[grey27]UsefulShodan.py: [italic]An over engineered Shodan-cli wrapper')
-	# console.print(f'[grey27]Shodan.io: [italic][deep_sky_blue4][link=https://cli.shodan.io/]https://cli.shodan.io/')
-	# console.print(f'[grey27]Github.com: [italic][deep_sky_blue4][link=https://github.com/NickSanzotta/usefulShodan/]https://github.com/NickSanzotta/')
-	# console.print('\n')
-
 
 
 if __name__ == '__main__':
