@@ -95,17 +95,17 @@ def main():
 
 	from rich.theme import Theme
 	custom_theme = Theme({
-		'status.spinner' :'orange1',
-		'txt.spinner' : 'light_sky_blue3'
+		'status.spinner' :'red',
+		'txt.spinner' : 'grey37'
 		})
 	from rich.console import Console
 	console = Console(theme=custom_theme)
 
 	# Table title.
-	table = Table(title="Shodan.io", box=box.DOUBLE_EDGE)
+	table = Table(title="[grey37]UsefulShodan2.py", box=box.DOUBLE_EDGE)
 	# Columns defined.
-	table.add_column("IP Address", justify="left", style="light_sky_blue3", no_wrap=True) #khaki3
-	table.add_column("Port", justify="left", style="orange3", no_wrap=True)
+	table.add_column("IP Address", justify="left", style="grey53", no_wrap=True) #khaki3 #grey37
+	table.add_column("Port", justify="left", style="red", no_wrap=True)
 	table.add_column("Protocol", justify="left", style="grey37", no_wrap=True)
 
 	# Filepath arg value.
@@ -120,10 +120,17 @@ def main():
 	# DEV: verbose flag
 	verbose = False
 
+	console.print(f'\n[grey27]UsefulShodan2: [italic]An over engineered Shodan-cli wrapper')
+	console.print(f'[grey27]Shodan.io: [italic][deep_sky_blue4][link=https://cli.shodan.io/]https://cli.shodan.io')
+	console.print(f'[grey27]Github.com: [italic][deep_sky_blue4][link=https://github.com/NickSanzotta/usefulShodan/]https://github.com/NickSanzotta\n')
+	# console.print('\n')
+
 	try:
-		
+		# print(f'Checking Shodan.io ...')
 		for ip in ipaddresses:
-			with console.status(f'[txt.spinner]Scanning... [orange3]{ip}') as status:
+			# print(f'Checking {ip}')
+			with console.status(spinner='bouncingBar', status=f'[txt.spinner]Shodan.io[white]: {ip}') as status:
+				# console.log(f'{ip}')
 				# Scan IP address against Shodan's database.
 				results = usefulshodan.scan_ip(ip)
 				for result in results:
@@ -146,7 +153,12 @@ def main():
 	# DEV
 	print('\n')
 	console.print(table)
-	console.print('\n[italic][deep_sky_blue4][link=https://www.shodan.io]https://www.shodan.io[/link]\n')
+	console.print('\n')
+	# console.print(f'[grey27]UsefulShodan.py: [italic]An over engineered Shodan-cli wrapper')
+	# console.print(f'[grey27]Shodan.io: [italic][deep_sky_blue4][link=https://cli.shodan.io/]https://cli.shodan.io/')
+	# console.print(f'[grey27]Github.com: [italic][deep_sky_blue4][link=https://github.com/NickSanzotta/usefulShodan/]https://github.com/NickSanzotta/')
+	# console.print('\n')
+
 
 
 if __name__ == '__main__':
