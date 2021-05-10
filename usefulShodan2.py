@@ -46,7 +46,7 @@ def main():
 
 	# Header
 	r.console.print(f'\n[i]UsefulShodan2', style='header')
-	r.console.print(f'[i]An over engineered for-loop for the [url][link=https://cli.shodan.io/]Shodan CLI.', style='header')
+	r.console.print(f'[i]A Python3 for-loop wrapper for the [url][link=https://cli.shodan.io/]Shodan CLI.', style='header')
 	r.console.print('\n')
 
 	try:
@@ -63,14 +63,12 @@ def main():
 						db.insert_result(result[0], result[1], result[2])
 						# Print Rich Table.
 						table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
-					
 					# Verbose print, include 'None' type results.
 					elif verbose == True:
 						# Insert ipaddress, port, protocol into database.
 						db.insert_result(result[0], result[1], result[2])
 						# Print Rich Table.
 						table.add_row(f'{result[0]}', f'{result[1]}', f'{result[2]}')
-					
 					# Standard print.
 					else:
 						if result[1] is None:
