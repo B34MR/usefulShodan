@@ -4,7 +4,6 @@ from utils import richard as r
 from utils import sqlite as db
 from utils import shodan
 from utils import arguments
-import sys
 
 
 def main():
