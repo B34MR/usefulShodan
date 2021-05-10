@@ -29,7 +29,7 @@ python3 -m pip install -r requirements.txt
 **Menu :**
 ```
 Usage:
-	python3 usefulShodan2.py <inputfile>
+    python3 usefulShodan2.py <inputfile>
     python3 usefulShodan2.py <inputfile> -d
     python3 usefulShodan2.py <inputfile> -v
     python3 usefulShodan2.py <inputfile> -vv
