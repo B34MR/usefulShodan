@@ -21,7 +21,7 @@ https://cli.shodan.io
 
 **Installation :**
 ```
-git clone https://github.com/NickSanzotta/usefulShodan.git
+git clone https://github.com/B34MR/usefulShodan.git
 cd usefulShodan
 python3 -m pip install -r requirements.txt
 ```    
